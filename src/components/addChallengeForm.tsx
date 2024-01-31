@@ -1,20 +1,13 @@
 "use client";
 
-import React, {
-  FormEvent,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { DotIcon, Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -38,6 +31,9 @@ type FormSchema = z.infer<typeof formSchema>;
 function AddChallengeForm() {
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
+    defaultValues: {
+      duration: 30,
+    },
   });
   const control = form.control;
   const { fields, append, remove } = useFieldArray({
@@ -69,54 +65,60 @@ function AddChallengeForm() {
     };
   }, [setProp, prop]);
 
-  function handleSubmit(e: FormEvent) {}
+  function onSubmit(data: FormSchema) {
+    console.log(data);
+  }
 
   return (
     <>
       <div>
         <Form {...form}>
-          <FormField
-            name="duration"
-            control={control}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  How many days you want this challenge to last?
-                </FormLabel>
-                <FormControl className="w-fit">
-                  <Input type="number" placeholder="90" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <div className="mt-6">
-            <Label className="">Create resolutions:</Label>
-            <div className="flex items-center gap-2 w-fit">
-              <Input
-                type="text"
-                value={prop}
-                ref={inputRef}
-                placeholder="Stop smoking"
-                onChange={(event) => setProp(event.currentTarget.value)}
-              />
-              <button onClick={addProperty}>
-                <Plus />
-              </button>
+          <form onSubmit={form.handleSubmit(onSubmit)}>
+            <FormField
+              name="duration"
+              control={control}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>
+                    How many days you want this challenge to last?
+                  </FormLabel>
+                  <FormControl className="w-fit">
+                    <Input type="number" placeholder="90" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="mt-6">
+              <Label className="">Create resolutions:</Label>
+              <div className="flex items-center gap-2 w-fit">
+                <Input
+                  type="text"
+                  value={prop}
+                  ref={inputRef}
+                  placeholder="Stop smoking"
+                  onChange={(event) => setProp(event.currentTarget.value)}
+                />
+                <button onClick={addProperty}>
+                  <Plus />
+                </button>
+              </div>
             </div>
-          </div>
-          <Button className="mt-6">Create challenge !</Button>
+            <Button className="mt-6">Create challenge !</Button>
+          </form>
         </Form>
       </div>
       <section className="space-y-4 my-10">
         <h2 className="text-xl font-medium">Resolutions for your challenge:</h2>
         <ul>
-          {fields.map((field) => (
+          {fields.map((field, index) => (
             <li
               key={field.id}
-              className="flex items-center space-x-3 rtl:space-x-reverse"
+              className="flex  items-center gap-2 rtl:space-x-reverse"
             >
-              <DotIcon />
+              <button onClick={() => remove(index)}>
+                <Trash2 size={16} />
+              </button>
               {field.property}
             </li>
           ))}
