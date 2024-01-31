@@ -1,9 +1,15 @@
 "use client";
 
-import React, { FormEvent, useCallback, useRef, useState } from "react";
+import React, {
+  FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { DotIcon, Plus } from "lucide-react";
 import { useFieldArray, useForm } from "react-hook-form";
 import {
   Form,
@@ -16,6 +22,7 @@ import {
 } from "@/components/ui/form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from "@/components/ui/button";
 
 const formSchema = z.object({
   duration: z.number().min(1),
@@ -48,48 +55,73 @@ function AddChallengeForm() {
       inputRef.current.focus();
     }
   }, [append, prop]);
+
+  useEffect(() => {
+    const keyDownHandler = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addProperty();
+      }
+    };
+    document.addEventListener("keydown", keyDownHandler);
+    return () => {
+      document.removeEventListener("keydown", keyDownHandler);
+    };
+  }, [setProp, prop]);
+
   function handleSubmit(e: FormEvent) {}
 
-  console.log(form.watch());
   return (
     <>
-      <Form {...form}>
-        <FormField
-          name="duration"
-          control={control}
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>
-                {" "}
-                How many days you want this challenge to last?
-              </FormLabel>
-              <FormControl className="w-fit">
-                <Input type="number" placeholder="90" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <div>
+        <Form {...form}>
+          <FormField
+            name="duration"
+            control={control}
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>
+                  How many days you want this challenge to last?
+                </FormLabel>
+                <FormControl className="w-fit">
+                  <Input type="number" placeholder="90" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <div className="mt-6">
+            <Label className="">Create resolutions:</Label>
+            <div className="flex items-center gap-2 w-fit">
+              <Input
+                type="text"
+                value={prop}
+                ref={inputRef}
+                placeholder="Stop smoking"
+                onChange={(event) => setProp(event.currentTarget.value)}
+              />
+              <button onClick={addProperty}>
+                <Plus />
+              </button>
+            </div>
+          </div>
+          <Button className="mt-6">Create challenge !</Button>
+        </Form>
+      </div>
+      <section className="space-y-4 my-10">
+        <h2 className="text-xl font-medium">Resolutions for your challenge:</h2>
         <ul>
           {fields.map((field) => (
-            <li key={field.id}>{field.property}</li>
+            <li
+              key={field.id}
+              className="flex items-center space-x-3 rtl:space-x-reverse"
+            >
+              <DotIcon />
+              {field.property}
+            </li>
           ))}
         </ul>
-      </Form>
-      <div>
-        <label className="text-xl">Create resolutions:</label>
-        <div className="flex items-center gap-2 w-fit">
-          <Input
-            type="text"
-            value={prop}
-            placeholder="Stop smoking"
-            onChange={(event) => setProp(event.currentTarget.value)}
-          />
-          <button onClick={addProperty}>
-            <Plus />
-          </button>
-        </div>
-      </div>
+      </section>
     </>
   );
 }
