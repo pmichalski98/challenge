@@ -1,0 +1,1 @@
+ALTER TABLE "challenge" ADD COLUMN "duration" integer NOT NULL;
