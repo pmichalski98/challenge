@@ -1,30 +1,42 @@
 "use server";
 import { auth } from "@clerk/nextjs";
-import { prop, users } from "@/db/schema";
+import { challenge, prop, users } from "@/db/schema";
 import { db } from "@/db/db";
-import { randomUUID } from "node:crypto";
-import { undefined } from "zod";
+import { FormSchema } from "@/components/addChallengeForm";
+import { redirect, useParams } from "next/navigation";
 
-export async function addResolution(formData: FormData) {
+export async function createChallenge(formData: FormSchema) {
   const { userId } = auth();
   if (!userId) {
     return "User is not logged in";
   }
-  console.log({ userId });
+  let challengeId;
   try {
-    await db.insert(users).values({
-      id: userId,
-    });
+    await db
+      .insert(users)
+      .values({
+        id: userId,
+      })
+      .onConflictDoNothing();
+    const createdChallenge = await db
+      .insert(challenge)
+      .values({
+        userId,
+        status: "not_done",
+        duration: formData.duration,
+      })
+      .returning();
+    challengeId = createdChallenge[0].id;
+    console.log(createdChallenge[0]);
+    for (const property of formData.properties) {
+      await db.insert(prop).values({
+        challengeId,
+        name: property.property,
+      });
+    }
   } catch (e) {
     console.error(e);
-    throw Error("Error creating user");
+    throw Error("Internal server error");
   }
-  const resolution = formData.get("resolution");
-  console.log(resolution);
-  try {
-  } catch (e) {
-    console.error(e);
-    throw Error("Error creating resolution");
-  }
-  return {};
+  redirect(`/challenge/${challengeId}`);
 }

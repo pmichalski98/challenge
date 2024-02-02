@@ -1,5 +1,5 @@
 {
-  "id": "1fa8a755-c68c-4cdc-8dba-279c5125ceea",
+  "id": "5dc59e9c-92d3-471a-acce-5f1d8143e0e7",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -12,6 +12,20 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "date",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "duration": {
+          "name": "duration",
+          "type": "integer",
+          "primaryKey": false,
           "notNull": true
         },
         "status": {
@@ -22,9 +36,9 @@
         },
         "userId": {
           "name": "userId",
-          "type": "serial",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -40,7 +54,8 @@
           "name": "id",
           "type": "uuid",
           "primaryKey": true,
-          "notNull": true
+          "notNull": true,
+          "default": "gen_random_uuid()"
         },
         "name": {
           "name": "name",
@@ -57,9 +72,9 @@
         },
         "challengeId": {
           "name": "challengeId",
-          "type": "serial",
+          "type": "uuid",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -73,7 +88,7 @@
       "columns": {
         "id": {
           "name": "id",
-          "type": "uuid",
+          "type": "varchar",
           "primaryKey": true,
           "notNull": true
         }

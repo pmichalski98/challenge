@@ -16,8 +16,9 @@ import {
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
+import { createChallenge } from "@/app/_actions";
 
-const formSchema = z.object({
+export const formSchema = z.object({
   duration: z.number().min(1),
   properties: z.array(
     z.object({
@@ -26,7 +27,7 @@ const formSchema = z.object({
   ),
 });
 
-type FormSchema = z.infer<typeof formSchema>;
+export type FormSchema = z.infer<typeof formSchema>;
 
 function AddChallengeForm() {
   const form = useForm<FormSchema>({
@@ -65,8 +66,8 @@ function AddChallengeForm() {
     };
   }, [setProp, prop]);
 
-  function onSubmit(data: FormSchema) {
-    console.log(data);
+  async function onSubmit(data: FormSchema) {
+    await createChallenge(data);
   }
 
   return (
@@ -83,7 +84,7 @@ function AddChallengeForm() {
                     How many days you want this challenge to last?
                   </FormLabel>
                   <FormControl className="w-fit">
-                    <Input type="number" placeholder="90" {...field} />
+                    <Input type="number" placeholder="30" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -99,7 +100,7 @@ function AddChallengeForm() {
                   placeholder="Stop smoking"
                   onChange={(event) => setProp(event.currentTarget.value)}
                 />
-                <button onClick={addProperty}>
+                <button type="button" onClick={addProperty}>
                   <Plus />
                 </button>
               </div>

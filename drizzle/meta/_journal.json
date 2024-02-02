@@ -5,29 +5,8 @@
     {
       "idx": 0,
       "version": "5",
-      "when": 1706906609603,
-      "tag": "0000_strong_power_man",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1706908369029,
-      "tag": "0001_right_boom_boom",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "5",
-      "when": 1706908515840,
-      "tag": "0002_exotic_dakota_north",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "5",
-      "when": 1706909414602,
-      "tag": "0003_rapid_mongu",
+      "when": 1706911447360,
+      "tag": "0000_smiling_the_order",
       "breakpoints": true
     }
   ]

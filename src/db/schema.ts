@@ -1,13 +1,12 @@
 import {
   boolean,
+  date,
   integer,
   pgTable,
-  serial,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
-import { randomUUID } from "node:crypto";
 
 export const users = pgTable("users", {
   id: varchar("id").primaryKey(),
@@ -18,9 +17,10 @@ export const usersRelations = relations(users, ({ many }) => ({
 }));
 export const challenge = pgTable("challenge", {
   id: uuid("id").primaryKey().defaultRandom(),
+  createdAt: date("createdAt", { mode: "date" }).defaultNow(),
   duration: integer("duration").notNull(),
   status: varchar("status").notNull(),
-  userId: serial("userId"),
+  userId: varchar("userId"),
 });
 
 type Challenge = typeof challenge.$inferSelect;
@@ -35,7 +35,7 @@ export const prop = pgTable("prop", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
   check: boolean("check").default(false),
-  challengeId: serial("challengeId"),
+  challengeId: uuid("challengeId"),
 });
 
 type Prop = typeof prop.$inferSelect;
