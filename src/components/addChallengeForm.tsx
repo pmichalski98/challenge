@@ -70,6 +70,8 @@ function AddChallengeForm() {
     await createChallenge(data);
   }
 
+  console.log(form.watch());
+
   return (
     <>
       <div>
@@ -84,7 +86,11 @@ function AddChallengeForm() {
                     How many days you want this challenge to last?
                   </FormLabel>
                   <FormControl className="w-fit">
-                    <Input type="number" placeholder="30" {...field} />
+                    <Input
+                      {...form.register("duration", { valueAsNumber: true })}
+                      type="number"
+                      placeholder="30"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -105,7 +111,11 @@ function AddChallengeForm() {
                 </button>
               </div>
             </div>
-            <Button className="mt-6">Create challenge !</Button>
+            <Button disabled={form.formState.isSubmitting} className="mt-6">
+              {form.formState.isSubmitting
+                ? "Creating ..."
+                : "Create challenge !"}
+            </Button>
           </form>
         </Form>
       </div>

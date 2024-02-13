@@ -3,6 +3,7 @@ import {
   date,
   integer,
   pgTable,
+  serial,
   uuid,
   varchar,
 } from "drizzle-orm/pg-core";
@@ -19,18 +20,32 @@ export const challenge = pgTable("challenge", {
   id: uuid("id").primaryKey().defaultRandom(),
   createdAt: date("createdAt", { mode: "date" }).defaultNow(),
   duration: integer("duration").notNull(),
-  status: varchar("status").notNull(),
   userId: varchar("userId"),
 });
 
 type Challenge = typeof challenge.$inferSelect;
 export const challengeRelations = relations(challenge, ({ many, one }) => ({
   props: many(prop),
+  days: many(day),
   user: one(users, {
     fields: [challenge.userId],
     references: [users.id],
   }),
 }));
+
+export const day = pgTable("day", {
+  id: serial("id").notNull().primaryKey(),
+  date: date("date", { mode: "date" }),
+  status: varchar("status").notNull(),
+  challengeId: varchar("challengeId"),
+});
+export const dayRelations = relations(day, ({ many, one }) => ({
+  challenge: one(challenge, {
+    fields: [day.challengeId],
+    references: [challenge.id],
+  }),
+}));
+
 export const prop = pgTable("prop", {
   id: uuid("id").primaryKey().defaultRandom(),
   name: varchar("name").notNull(),
