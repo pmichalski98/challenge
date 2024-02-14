@@ -10,22 +10,25 @@ interface Params {
   };
 }
 async function Page({ params }: Params) {
-  const days = await db
-    .select()
-    .from(day)
-    .where(eq(day.challengeId, params.id));
-
+  const days = await db.query.day.findMany({
+    orderBy: day.date,
+  });
+  console.log(days.length);
   const now = new Date();
   return (
     <div className={`grid grid-cols-${days.length / 10} w-full h-screen`}>
-      {days.map((day) => (
-        <button
-          className={`flex border border-black items-center justify-center ${datefns.isBefore(day.date!, now) ? "" : "bg-gray-400"}`}
-          key={day.id}
-        >
-          {day.id}
-        </button>
-      ))}
+      {days.map((day) => {
+        const isDisabled = datefns.isBefore(day.date!, now);
+        return (
+          <button
+            disabled={!isDisabled}
+            className={`flex border border-black items-center justify-center ${isDisabled ? "hover:bg-slate-400" : "bg-gray-400 "}`}
+            key={day.id}
+          >
+            {day.id}
+          </button>
+        );
+      })}
     </div>
   );
 }
