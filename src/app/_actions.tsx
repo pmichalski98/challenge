@@ -3,7 +3,7 @@ import { auth } from "@clerk/nextjs";
 import { challenge, day, prop, users } from "@/db/schema";
 import { db } from "@/db/db";
 import { FormSchema } from "@/components/addChallengeForm";
-import { redirect, useParams } from "next/navigation";
+import { redirect } from "next/navigation";
 import * as datefns from "date-fns";
 export async function createChallenge(formData: FormSchema) {
   const { userId } = auth();

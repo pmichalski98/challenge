@@ -23,7 +23,7 @@ export const challenge = pgTable("challenge", {
   userId: varchar("userId"),
 });
 
-type Challenge = typeof challenge.$inferSelect;
+export type Challenge = typeof challenge.$inferSelect;
 export const challengeRelations = relations(challenge, ({ many, one }) => ({
   props: many(prop),
   days: many(day),
