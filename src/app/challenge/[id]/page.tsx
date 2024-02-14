@@ -15,6 +15,7 @@ async function Page({ params }: Params) {
   });
   console.log(days.length);
   const now = new Date();
+  console.log(days[0].status);
   return (
     <div className={`grid grid-cols-${days.length / 10} w-full h-screen`}>
       {days.map((day) => {
